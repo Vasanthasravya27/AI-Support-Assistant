@@ -1,0 +1,52 @@
+services:
+  rag-service:
+    build:
+      context: .
+      dockerfile: rag-service/Dockerfile
+    environment:
+      KNOWLEDGE_DIR: /knowledge-base
+      CHROMA_PATH: /data/chroma
+      INGEST_ON_STARTUP: "true"
+    volumes:
+      - rag-data:/data
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 90s
+
+  mcp-server:
+    build:
+      context: ./mcp-server
+    environment:
+      RAG_BASEURL: http://rag-service:8000
+      SPRING_DATASOURCE_URL: jdbc:h2:file:/app/data/support-db
+    volumes:
+      - ticket-data:/app/data
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      rag-service:
+        condition: service_healthy
+
+  agent-service:
+    build:
+      context: ./agent-service
+    environment:
+      MCP_URL: http://mcp-server:8080/mcp
+      LLM_MODEL: ${LLM_MODEL:-gpt-4o-mini}
+      LLM_API_KEY: ${LLM_API_KEY:?Set LLM_API_KEY in .env}
+      LLM_BASE_URL: ${LLM_BASE_URL:-}
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      mcp-server:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  rag-data:
+  ticket-data:

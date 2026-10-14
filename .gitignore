@@ -1,0 +1,19 @@
+# Java / Maven
+mcp-server/target/
+*.class
+*.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+rag-service/data/
+
+# Local data
+mcp-server/data/
+.env
+
+# IDE
+.idea/
+.vscode/
+*.iml

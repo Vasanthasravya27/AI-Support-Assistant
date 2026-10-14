@@ -1,0 +1,69 @@
+services:
+  - type: web
+    name: ai-support-rag
+    runtime: docker
+    plan: free
+    dockerContext: .
+    dockerfilePath: ./rag-service/Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: KNOWLEDGE_DIR
+        value: /knowledge-base
+      - key: CHROMA_PATH
+        value: /tmp/chroma
+      - key: INGEST_ON_STARTUP
+        value: "true"
+      - key: RAG_API_TOKEN
+        generateValue: true
+
+  - type: web
+    name: ai-support-mcp
+    runtime: docker
+    plan: free
+    dockerContext: ./mcp-server
+    dockerfilePath: ./mcp-server/Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: RAG_BASEURL
+        fromService:
+          name: ai-support-rag
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: RAG_API_TOKEN
+        fromService:
+          name: ai-support-rag
+          type: web
+          envVarKey: RAG_API_TOKEN
+      - key: MCP_AUTH_TOKEN
+        generateValue: true
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:h2:file:/tmp/support-db
+      - key: JAVA_TOOL_OPTIONS
+        value: -Xms64m -Xmx256m -XX:MaxMetaspaceSize=128m -XX:+UseSerialGC
+
+  - type: web
+    name: ai-support-assistant
+    runtime: docker
+    plan: free
+    dockerContext: ./agent-service
+    dockerfilePath: ./agent-service/Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: MCP_BASE_URL
+        fromService:
+          name: ai-support-mcp
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: MCP_AUTH_TOKEN
+        fromService:
+          name: ai-support-mcp
+          type: web
+          envVarKey: MCP_AUTH_TOKEN
+      - key: DEMO_ACCESS_CODE
+        sync: false
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_MODEL
+        value: gemini-3.5-flash-lite
+      - key: LLM_BASE_URL
+        value: https://generativelanguage.googleapis.com/v1beta/openai/
