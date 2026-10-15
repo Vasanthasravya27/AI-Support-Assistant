@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8fc">
+  <title>Support Assistant</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Support Assistant home">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <span>Support<span class="brand-light"> Assistant</span></span>
+      </a>
+      <button id="new-chat" class="new-chat" type="button"><span aria-hidden="true">＋</span> New chat</button>
+    </header>
+
+    <section class="intro" id="intro">
+      <div class="eyebrow"><span class="pulse"></span> CUSTOMER CARE · ONLINE</div>
+      <h1>How can we help<br><span>you today?</span></h1>
+      <p>Ask about your account, billing, or getting started.<br>I'll look through our help guides to find the right answer.</p>
+      <div class="suggestions" aria-label="Suggested questions">
+        <button type="button" class="suggestion" data-prompt="How do I reset my password?">↗ &nbsp;Reset my password</button>
+        <button type="button" class="suggestion" data-prompt="When will my refund arrive?">↗ &nbsp;Refund timing</button>
+        <button type="button" class="suggestion" data-prompt="What are the plan limits?">↗ &nbsp;Plan limits</button>
+      </div>
+    </section>
+
+    <section id="messages" class="messages" aria-live="polite" aria-label="Conversation"></section>
+
+    <form id="chat-form" class="composer">
+      <label class="sr-only" for="message-input">Your message</label>
+      <textarea id="message-input" rows="1" maxlength="4000" placeholder="Ask a question…" required></textarea>
+      <div class="composer-footer">
+        <span class="privacy"><span aria-hidden="true">⌁</span> Answers grounded in our support guides</span>
+        <button id="send-button" class="send-button" type="submit" aria-label="Send message">
+          <span>Send</span><span aria-hidden="true">↑</span>
+        </button>
+      </div>
+    </form>
+    <footer>AI can make mistakes. Please avoid sharing passwords or payment details.</footer>
+  </main>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

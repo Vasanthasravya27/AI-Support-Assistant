@@ -1,0 +1,32 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: support-assistant
+  datasource:
+    url: jdbc:h2:file:./data/support-db
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  ai:
+    mcp:
+      server:
+        name: support-assistant-mcp
+        version: 0.1.0
+        type: SYNC
+        protocol: STREAMABLE        # Streamable HTTP, served at POST /mcp
+        instructions: |
+          Customer support tools. Use search_knowledge_base to answer product, billing,
+          account and policy questions. Use the ticket tools only when the knowledge base
+          cannot resolve the issue or the customer asks for a human.
+
+rag:
+  base-url: http://localhost:8000   # Python RAG service
+  connect-timeout: 3s
+  read-timeout: 30s
+  default-top-k: 4
+  min-score: 0.25

@@ -1,0 +1,20 @@
+[
+  {
+    "name": "password reset steps",
+    "message": "How do I reset my password?",
+    "must_use_tools": ["search_knowledge_base"],
+    "answer_contains_any": ["forgot password", "reset email", "reset link"]
+  },
+  {
+    "name": "refund timing and policy",
+    "message": "How long do refunds take, and can I get a refund for a yearly plan?",
+    "must_use_tools": ["search_knowledge_base"],
+    "answer_contains_any": ["5 to 10 business days", "5-10 business days", "business days"]
+  },
+  {
+    "name": "plan limits",
+    "message": "How many API requests are included in the free plan?",
+    "must_use_tools": ["search_knowledge_base"],
+    "answer_contains_any": ["1,000", "1000"]
+  }
+]
